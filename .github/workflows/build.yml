@@ -1,0 +1,38 @@
+name: Build
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+jobs:
+  build:
+    name: Validate build
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - name: Install dependencies
+        run: npm ci
+      - name: Prettier check
+        run: npm run prettier
+      - name: Lint the code
+        run: npm run lint
+      - name: Run the test suite
+        run: npm test
+      - name: Monitor coverage
+        uses: slavcodev/coverage-monitor-action@1.2.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          clover_file: .coverage/clover.xml
+          threshold_alert: 50
+          threshold_warning: 60
+      - name: Publish Code Coverage
+        run: npx codecov
+      - name: Build and package the code
+        run: npm run package
+      - name: Build the documentation
+        run: npm run docs

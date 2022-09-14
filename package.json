@@ -1,0 +1,102 @@
+{
+  "name": "@gradientedge/akeneo-utils",
+  "version": "0.0.0-development",
+  "description": "Provide utility classes and functions for interacting with the Akeneo API",
+  "main": "./dist/ge-akeneo-utils-node.cjs.js",
+  "module": "./dist/ge-akeneo-utils-node.esm.js",
+  "types": "./dist/typings/index.d.ts",
+  "browser": {
+    "./dist/ge-akeneo-utils-node.cjs.js": "./dist/ge-akeneo-utils-browser.cjs.js",
+    "./dist/ge-akeneo-utils-node.esm.js": "./dist/ge-akeneo-utils-browser.esm.js"
+  },
+  "scripts": {
+    "cz": "cz",
+    "build": "npm run build-cjs && npm run build-esm",
+    "build-cjs": "tsc",
+    "build-esm": "tsc --project tsconfig.esm.json",
+    "clean": "rimraf dist",
+    "clean:cjs": "rimraf dist/cjs",
+    "clean:esm": "rimraf dist/esm",
+    "watch": "tsc --watch",
+    "lint": "eslint './src/**/*.ts' --max-warnings=0",
+    "package": "npm run clean && npm run build && npm run bundle && npm run clean:cjs && npm run clean:esm && npm run typings",
+    "prepare": "husky install",
+    "prettier": "prettier --check \"**/*.{ts,js,json,graphql}\"",
+    "prettify": "prettier --write \"**/*.{ts,js,json,graphql}\"",
+    "test": "TZ=UTC jest --passWithNoTests --runInBand",
+    "validate": "npm run prettier && npm run lint && npm run test",
+    "docs": "typedoc",
+    "semantic-release": "semantic-release",
+    "bundle": "npm run bundle-browser && npm run bundle-node",
+    "bundle-browser": "webpack --config=webpack.config.browser.js",
+    "bundle-node": "webpack --config=webpack.config.node.js",
+    "typings": "tsc --outDir ./dist/typings --emitDeclarationOnly --declarationMap false"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gradientedge/akeneo-utils.git"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ]
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "akeneo",
+    "utils"
+  ],
+  "author": "Gradient Edge Ltd.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gradientedge/akeneo-utils/issues"
+  },
+  "homepage": "https://github.com/gradientedge/akeneo-utils#readme",
+  "devDependencies": {
+    "@sinonjs/fake-timers": "9.1.2",
+    "@types/jest": "27.4.1",
+    "@types/json-stringify-safe": "5.0.0",
+    "@types/lodash": "4.14.181",
+    "@types/lodash.clonedeep": "4.5.6",
+    "@types/node": "17.0.24",
+    "@types/qs": "6.9.7",
+    "@types/sinonjs__fake-timers": "8.1.2",
+    "@types/traverse": "0.6.32",
+    "@typescript-eslint/eslint-plugin": "5.19.0",
+    "@typescript-eslint/parser": "5.19.0",
+    "codecov": "3.8.3",
+    "commitizen": "4.2.4",
+    "cz-conventional-changelog": "3.3.0",
+    "eslint": "8.13.0",
+    "eslint-config-prettier": "8.5.0",
+    "husky": "7.0.4",
+    "jest": "27.5.1",
+    "jest-matcher-specific-error": "1.0.0",
+    "jest-mock": "27.5.1",
+    "nock": "13.2.4",
+    "prettier": "2.6.2",
+    "rimraf": "3.0.2",
+    "semantic-release": "19.0.2",
+    "ts-jest": "27.1.4",
+    "ts-node": "10.7.0",
+    "typedoc": "0.22.15",
+    "typescript": "~4.6.3",
+    "webpack": "5.72.0",
+    "webpack-cli": "4.9.2"
+  },
+  "dependencies": {
+    "@tshttp/status": "^2.0.0",
+    "axios": "0.26.1",
+    "json-stringify-safe": "5.0.1",
+    "lodash.clonedeep": "4.5.0",
+    "qs": "6.10.3",
+    "traverse": "0.6.6"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
