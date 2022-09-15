@@ -34,7 +34,7 @@ export interface AkeneoRetryConfig {
   jitter?: boolean
 }
 
-export interface QueryProductParams {
+export interface QueryProductsParams {
   /**
    * Filter products, for more details see https://api.akeneo.com/documentation/filter.html
    */
@@ -102,4 +102,64 @@ export interface QueryProductParams {
    * Return product completeness in the response. (Only available on SaaS platforms)
    */
   with_completenesses: boolean
+}
+
+export interface QueryProductModelsParams {
+  /**
+   * Filter products, for more details see https://api.akeneo.com/documentation/filter.html
+   */
+  search: string
+
+  /**
+   * Filter product values to return scopable attributes for the given channel as well as the
+   * non localizable/non scopable attributes, for more details see
+   * https://api.akeneo.com/documentation/filter.html#via-channel
+   */
+  scope: string
+
+  /**
+   * Filter product values to return localizable attributes for the given locales as well as the
+   * non localizable/non scopable attributes, for more details see
+   * https://api.akeneo.com/documentation/filter.html#via-locale
+   */
+  locales: string
+
+  /**
+   * Filter product values to only return those concerning the given attributes, for more
+   * details see https://api.akeneo.com/documentation/filter.html#filter-product-values
+   */
+  attributes: string
+
+  /**
+   * Pagination method type, see https://api.akeneo.com/documentation/pagination.html
+   */
+  pagination_type: string
+
+  /**
+   * Number of the page to retrieve when using the `page` pagination method type.
+   * Should never be set manually, see https://api.akeneo.com/documentation/pagination.html
+   */
+  page: number
+
+  /**
+   * Cursor when using the `search_after` pagination method type.
+   * Should never be set manually, see https://api.akeneo.com/documentation/pagination.html
+   */
+  search_after: string
+
+  /**
+   * Number of results by page, see https://api.akeneo.com/documentation/pagination.html
+   */
+  limit: number
+
+  /**
+   * Return the count of items in the response. Be careful with this. On a big catalog,
+   * it can decrease performance in a significant way
+   */
+  with_count: boolean
+
+  /**
+   * Return product quality scores in the response. (Only available since the 5.0 version)
+   */
+  with_quality_scores: boolean
 }
