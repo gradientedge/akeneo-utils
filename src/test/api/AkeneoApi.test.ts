@@ -127,37 +127,34 @@ describe('AkeneoApi', () => {
   })
 
   describe('request', () => {
-    // it('should timeout after the default timeout period', async () => {
-    //   nock('https://test-endpoint')
-    //     .get('/products')
-    //     .delay(2000)
-    //     .reply(200, { success: true })
-    //   const api = new AkeneoApi(defaultConfig)
-    //
-    //   try {
-    //     await api.queryProducts()
-    //   } catch (e: any) {
-    //     expect(e).toBeInstanceOf(AkeneoError)
-    //     expect(e.toJSON()).toEqual({
-    //       data: {
-    //         code: 'ECONNABORTED',
-    //         request: {
-    //           headers: {
-    //             Accept: 'application/json',
-    //             Authorization: '********',
-    //           },
-    //           method: 'get',
-    //           url: 'https://test-endpoint/products',
-    //         },
-    //         response: {},
-    //       },
-    //       isAkeneoError: true,
-    //       message: 'timeout of 1000ms exceeded',
-    //     })
-    //     return
-    //   }
-    //   fail('api.getProductById should have thrown due to timeout')
-    // })
+    it('should timeout after the default timeout period', async () => {
+      nock('https://test-endpoint').get('/api/rest/v1/products').delay(2000).reply(200, { success: true })
+      const api = new AkeneoApi(defaultConfig)
+
+      try {
+        await api.queryProducts()
+      } catch (e: any) {
+        expect(e).toBeInstanceOf(AkeneoError)
+        expect(e.toJSON()).toEqual({
+          data: {
+            code: 'ECONNABORTED',
+            request: {
+              headers: {
+                Accept: 'application/json',
+                Authorization: '********',
+              },
+              method: 'get',
+              url: 'https://test-endpoint/api/rest/v1/products',
+            },
+            response: {},
+          },
+          isAkeneoError: true,
+          message: 'timeout of 1000ms exceeded',
+        })
+        return
+      }
+      fail('api.getProductById should have thrown due to timeout')
+    })
 
     describe('retry mechanism', () => {
       describe('with 500 status code response', () => {

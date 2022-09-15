@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios'
 import qs from 'qs'
-import { AkeneoApiConfig, AkeneoRetryConfig, QueryProductParams } from './types'
+import { AkeneoApiConfig, AkeneoRetryConfig, QueryProductModelsParams, QueryProductsParams } from './types'
 import { AkeneoAuth } from '../'
 import { AkeneoError } from '../error'
 import { DEFAULT_REQUEST_TIMEOUT_MS } from '../constants'
@@ -169,13 +169,25 @@ export class AkeneoApi {
   }
 
   /**
-   * Get a store given it's id
+   * Query products
    * https://api.akeneo.com/api-reference.html#get_products
    */
-  queryProducts(options?: CommonRequestOptions & { params?: QueryProductParams }): Promise<any> {
+  queryProducts(options?: CommonRequestOptions & { params?: QueryProductsParams }): Promise<any> {
     return this.request({
       ...this.extractCommonRequestOptions(options),
       path: `/products`,
+      method: 'GET',
+    })
+  }
+
+  /**
+   * Query product models
+   * https://api.akeneo.com/api-reference.html#get_product_models
+   */
+  queryProductModels(options?: CommonRequestOptions & { params?: QueryProductModelsParams }): Promise<any> {
+    return this.request({
+      ...this.extractCommonRequestOptions(options),
+      path: `/product-models`,
       method: 'GET',
     })
   }
