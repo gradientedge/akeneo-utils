@@ -140,6 +140,20 @@ export interface Product {
   completenesses: any
 }
 
+export interface AttributeOption {
+  /** Code of option */
+  code: string
+
+  /** Code of attribute related to the attribute option */
+  attribute: string
+
+  /** Order of attribute option */
+  sort_order: number
+
+  /** Locale/string pairs, e.g. { en_GB: 'Some English text' } */
+  labels: Record<string, string>
+}
+
 /**
  * Interface for the generic results container
  */
