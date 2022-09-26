@@ -132,7 +132,7 @@ describe('AkeneoApi', () => {
       const api = new AkeneoApi(defaultConfig)
 
       try {
-        await api.queryProducts()
+        await api.getListOfProducts()
       } catch (e: any) {
         expect(e).toBeInstanceOf(AkeneoError)
         expect(e.toJSON()).toEqual({
@@ -163,7 +163,7 @@ describe('AkeneoApi', () => {
           const api = new AkeneoApi(defaultConfig)
 
           expect(scope1.isDone())
-          await expect(api.queryProducts()).rejects.toThrow()
+          await expect(api.getListOfProducts()).rejects.toThrow()
         })
 
         it('should retry once when the appropriate constructor retry configuration is passed in', async () => {
@@ -178,7 +178,7 @@ describe('AkeneoApi', () => {
           })
 
           const startTime = Date.now()
-          const result = await api.queryProducts()
+          const result = await api.getListOfProducts()
           const endTime = Date.now()
 
           scope1.isDone()
@@ -200,7 +200,7 @@ describe('AkeneoApi', () => {
           })
 
           const startTime = Date.now()
-          const result = await api.queryProducts()
+          const result = await api.getListOfProducts()
           const endTime = Date.now()
 
           scope1.isDone()
@@ -223,7 +223,7 @@ describe('AkeneoApi', () => {
           })
 
           const startTime = Date.now()
-          const result = await api.queryProducts()
+          const result = await api.getListOfProducts()
           const endTime = Date.now()
 
           scope1.isDone()
@@ -245,7 +245,7 @@ describe('AkeneoApi', () => {
           })
 
           scope1.isDone()
-          await expect(api.queryProducts()).rejects.toThrow()
+          await expect(api.getListOfProducts()).rejects.toThrow()
         })
       })
 
@@ -260,7 +260,7 @@ describe('AkeneoApi', () => {
             },
           })
 
-          const result = await api.queryProducts()
+          const result = await api.getListOfProducts()
 
           scope1.isDone()
           await expect(result).toEqual({ success: true })
@@ -283,7 +283,7 @@ describe('AkeneoApi', () => {
           })
 
           const startTime = Date.now()
-          const result = await api.queryProducts({
+          const result = await api.getListOfProducts({
             retry: {
               maxRetries: 4,
               delayMs: 500,
@@ -313,7 +313,7 @@ describe('AkeneoApi', () => {
         const api = new AkeneoApi(defaultConfig)
 
         try {
-          await api.queryProducts()
+          await api.getListOfProducts()
         } catch (error: any) {
           expect(error?.toJSON()).toEqual({
             data: {

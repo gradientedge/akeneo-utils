@@ -73,7 +73,7 @@ export interface GetProductParams extends CommonRequestOptions {
   }
 }
 
-export interface QueryProductsParams extends CommonRequestOptions {
+export interface GetListOfProductsParams extends CommonRequestOptions {
   params?: {
     /**
      * Filter products, for more details see https://api.akeneo.com/documentation/filter.html
@@ -145,7 +145,7 @@ export interface QueryProductsParams extends CommonRequestOptions {
   }
 }
 
-export interface QueryProductModelsParams extends CommonRequestOptions {
+export interface GetListOfProductModelsParams extends CommonRequestOptions {
   params?: {
     /**
      * Filter products, for more details see https://api.akeneo.com/documentation/filter.html
@@ -204,5 +204,31 @@ export interface QueryProductModelsParams extends CommonRequestOptions {
      * Return product quality scores in the response. (Only available since the 5.0 version)
      */
     with_quality_scores?: boolean | undefined
+  }
+}
+
+export interface GetListOfAttributeOptionsParams extends CommonRequestOptions {
+  /**
+   * The attribute code
+   */
+  attributeCode: string
+
+  params?: {
+    /**
+     * Number of the page to retrieve
+     * Should never be set manually, see https://api.akeneo.com/documentation/pagination.html
+     */
+    page?: number | undefined
+
+    /**
+     * Number of results by page, see https://api.akeneo.com/documentation/pagination.html
+     */
+    limit?: number | undefined
+
+    /**
+     * Return the count of items in the response. Be careful with this. On a big catalog,
+     * it can decrease performance in a significant way
+     */
+    with_count?: boolean | undefined
   }
 }

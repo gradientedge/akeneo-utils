@@ -3,12 +3,13 @@ import qs from 'qs'
 import {
   AkeneoApiConfig,
   AkeneoRetryConfig,
+  GetListOfAttributeOptionsParams,
   GetProductModelParams,
   GetProductParams,
-  QueryProductModelsParams,
-  QueryProductsParams,
+  GetListOfProductModelsParams,
+  GetListOfProductsParams,
 } from './types'
-import { AkeneoAuth } from '../'
+import { AkeneoAuth, AttributeOption } from '../'
 import { AkeneoError } from '../error'
 import { DEFAULT_REQUEST_TIMEOUT_MS } from '../constants'
 import { calculateDelay } from '../utils'
@@ -189,10 +190,10 @@ export class AkeneoApi {
   }
 
   /**
-   * Query products
+   * Get a list of products
    * https://api.akeneo.com/api-reference.html#get_products
    */
-  queryProducts(options?: QueryProductsParams): Promise<Results<Product>> {
+  getListOfProducts(options?: GetListOfProductsParams): Promise<Results<Product>> {
     return this.request({
       ...this.extractCommonRequestOptions(options),
       path: `/products`,
@@ -213,13 +214,27 @@ export class AkeneoApi {
   }
 
   /**
-   * Query product models
+   * Get a list of product models
    * https://api.akeneo.com/api-reference.html#get_product_models
    */
-  queryProductModels(options?: QueryProductModelsParams): Promise<Results<ProductModel>> {
+  getListOfProductModels(options?: GetListOfProductModelsParams): Promise<Results<ProductModel>> {
     return this.request({
       ...this.extractCommonRequestOptions(options),
       path: `/product-models`,
+      method: 'GET',
+    })
+  }
+
+  /**
+   * Get list of attribute options
+   * https://api.akeneo.com/api-reference.html#get_attributes__attribute_code__options
+   */
+  getListOfAttributeOptions(
+    options: CommonRequestOptions & GetListOfAttributeOptionsParams,
+  ): Promise<AttributeOption[]> {
+    return this.request({
+      ...this.extractCommonRequestOptions(options),
+      path: `/attributes/${options.attributeCode}/options`,
       method: 'GET',
     })
   }
