@@ -1,5 +1,6 @@
 import * as https from 'https'
 import { AkeneoAuthConfig } from '../auth'
+import { CommonRequestOptions } from './AkeneoApi'
 
 /**
  * Configuration for constructing the {@see AkeneoApi} class.
@@ -34,132 +35,174 @@ export interface AkeneoRetryConfig {
   jitter?: boolean
 }
 
-export interface QueryProductsParams {
+export interface GetProductModelParams extends CommonRequestOptions {
   /**
-   * Filter products, for more details see https://api.akeneo.com/documentation/filter.html
+   * The product code
    */
-  search: string
+  code: string
 
-  /**
-   * Filter product values to return scopable attributes for the given channel as well as the
-   * non localizable/non scopable attributes, for more details see
-   * https://api.akeneo.com/documentation/filter.html#via-channel
-   */
-  scope: string
-
-  /**
-   * Filter product values to return localizable attributes for the given locales as well as the
-   * non localizable/non scopable attributes, for more details see
-   * https://api.akeneo.com/documentation/filter.html#via-locale
-   */
-  locales: string
-
-  /**
-   * Filter product values to only return those concerning the given attributes, for more
-   * details see https://api.akeneo.com/documentation/filter.html#filter-product-values
-   */
-  attributes: string
-
-  /**
-   * Pagination method type, see https://api.akeneo.com/documentation/pagination.html
-   */
-  pagination_type: string
-
-  /**
-   * Number of the page to retrieve when using the `page` pagination method type.
-   * Should never be set manually, see https://api.akeneo.com/documentation/pagination.html
-   */
-  page: number
-
-  /**
-   * Cursor when using the `search_after` pagination method type.
-   * Should never be set manually, see https://api.akeneo.com/documentation/pagination.html
-   */
-  search_after: string
-
-  /**
-   * Number of results by page, see https://api.akeneo.com/documentation/pagination.html
-   */
-  limit: number
-
-  /**
-   * Return the count of items in the response. Be careful with this. On a big catalog,
-   * it can decrease performance in a significant way
-   */
-  with_count: boolean
-
-  /**
-   * Return labels of attribute options in the response. (Only available since the 5.0 version)
-   */
-  with_attribute_options: boolean
-
-  /**
-   * Return product quality scores in the response. (Only available since the 5.0 version)
-   */
-  with_quality_scores: boolean
-
-  /**
-   * Return product completeness in the response. (Only available on SaaS platforms)
-   */
-  with_completenesses: boolean
+  params?: {
+    /**
+     * Return product quality scores in the response. (Only available since the 5.0 version)
+     */
+    with_quality_scores?: boolean | undefined
+  }
 }
 
-export interface QueryProductModelsParams {
+export interface GetProductParams extends CommonRequestOptions {
   /**
-   * Filter products, for more details see https://api.akeneo.com/documentation/filter.html
+   * The product code
    */
-  search: string
+  code: string
 
-  /**
-   * Filter product values to return scopable attributes for the given channel as well as the
-   * non localizable/non scopable attributes, for more details see
-   * https://api.akeneo.com/documentation/filter.html#via-channel
-   */
-  scope: string
+  params?: {
+    /**
+     * Return labels of attribute options in the response. (Only available since the 5.0 version)
+     */
+    with_attribute_options?: boolean | undefined
 
-  /**
-   * Filter product values to return localizable attributes for the given locales as well as the
-   * non localizable/non scopable attributes, for more details see
-   * https://api.akeneo.com/documentation/filter.html#via-locale
-   */
-  locales: string
+    /**
+     * Return product quality scores in the response. (Only available since the 5.0 version)
+     */
+    with_quality_scores?: boolean | undefined
 
-  /**
-   * Filter product values to only return those concerning the given attributes, for more
-   * details see https://api.akeneo.com/documentation/filter.html#filter-product-values
-   */
-  attributes: string
+    /**
+     * Return product completeness in the response. (Only available on SaaS platforms)
+     */
+    with_completenesses?: boolean | undefined
+  }
+}
 
-  /**
-   * Pagination method type, see https://api.akeneo.com/documentation/pagination.html
-   */
-  pagination_type: string
+export interface QueryProductsParams extends CommonRequestOptions {
+  params?: {
+    /**
+     * Filter products, for more details see https://api.akeneo.com/documentation/filter.html
+     */
+    search?: string | undefined
 
-  /**
-   * Number of the page to retrieve when using the `page` pagination method type.
-   * Should never be set manually, see https://api.akeneo.com/documentation/pagination.html
-   */
-  page: number
+    /**
+     * Filter product values to return scopable attributes for the given channel as well as the
+     * non localizable/non scopable attributes, for more details see
+     * https://api.akeneo.com/documentation/filter.html#via-channel
+     */
+    scope?: string | undefined
 
-  /**
-   * Cursor when using the `search_after` pagination method type.
-   * Should never be set manually, see https://api.akeneo.com/documentation/pagination.html
-   */
-  search_after: string
+    /**
+     * Filter product values to return localizable attributes for the given locales as well as the
+     * non localizable/non scopable attributes, for more details see
+     * https://api.akeneo.com/documentation/filter.html#via-locale
+     */
+    locales?: string | undefined
 
-  /**
-   * Number of results by page, see https://api.akeneo.com/documentation/pagination.html
-   */
-  limit: number
+    /**
+     * Filter product values to only return those concerning the given attributes, for more
+     * details see https://api.akeneo.com/documentation/filter.html#filter-product-values
+     */
+    attributes?: string | undefined
 
-  /**
-   * Return the count of items in the response. Be careful with this. On a big catalog,
-   * it can decrease performance in a significant way
-   */
-  with_count: boolean
+    /**
+     * Pagination method type, see https://api.akeneo.com/documentation/pagination.html
+     */
+    pagination_type?: string | undefined
 
-  /**
-   * Return product quality scores in the response. (Only available since the 5.0 version)
-   */
-  with_quality_scores: boolean
+    /**
+     * Number of the page to retrieve when using the `page` pagination method type.
+     * Should never be set manually, see https://api.akeneo.com/documentation/pagination.html
+     */
+    page?: number | undefined
+
+    /**
+     * Cursor when using the `search_after` pagination method type.
+     * Should never be set manually, see https://api.akeneo.com/documentation/pagination.html
+     */
+    search_after?: string | undefined
+
+    /**
+     * Number of results by page, see https://api.akeneo.com/documentation/pagination.html
+     */
+    limit?: number | undefined
+
+    /**
+     * Return the count of items in the response. Be careful with this. On a big catalog,
+     * it can decrease performance in a significant way
+     */
+    with_count?: boolean | undefined
+
+    /**
+     * Return labels of attribute options in the response. (Only available since the 5.0 version)
+     */
+    with_attribute_options?: boolean | undefined
+
+    /**
+     * Return product quality scores in the response. (Only available since the 5.0 version)
+     */
+    with_quality_scores?: boolean | undefined
+
+    /**
+     * Return product completeness in the response. (Only available on SaaS platforms)
+     */
+    with_completenesses?: boolean | undefined
+  }
+}
+
+export interface QueryProductModelsParams extends CommonRequestOptions {
+  params?: {
+    /**
+     * Filter products, for more details see https://api.akeneo.com/documentation/filter.html
+     */
+    search?: string | undefined
+
+    /**
+     * Filter product values to return scopable attributes for the given channel as well as the
+     * non localizable/non scopable attributes, for more details see
+     * https://api.akeneo.com/documentation/filter.html#via-channel
+     */
+    scope?: string | undefined
+
+    /**
+     * Filter product values to return localizable attributes for the given locales as well as the
+     * non localizable/non scopable attributes, for more details see
+     * https://api.akeneo.com/documentation/filter.html#via-locale
+     */
+    locales?: string | undefined
+
+    /**
+     * Filter product values to only return those concerning the given attributes, for more
+     * details see https://api.akeneo.com/documentation/filter.html#filter-product-values
+     */
+    attributes?: string | undefined
+
+    /**
+     * Pagination method type, see https://api.akeneo.com/documentation/pagination.html
+     */
+    pagination_type?: string | undefined
+
+    /**
+     * Number of the page to retrieve when using the `page` pagination method type.
+     * Should never be set manually, see https://api.akeneo.com/documentation/pagination.html
+     */
+    page?: number | undefined
+
+    /**
+     * Cursor when using the `search_after` pagination method type.
+     * Should never be set manually, see https://api.akeneo.com/documentation/pagination.html
+     */
+    search_after?: string | undefined
+
+    /**
+     * Number of results by page, see https://api.akeneo.com/documentation/pagination.html
+     */
+    limit?: number | undefined
+
+    /**
+     * Return the count of items in the response. Be careful with this. On a big catalog,
+     * it can decrease performance in a significant way
+     */
+    with_count?: boolean | undefined
+
+    /**
+     * Return product quality scores in the response. (Only available since the 5.0 version)
+     */
+    with_quality_scores?: boolean | undefined
+  }
 }
