@@ -1,11 +1,19 @@
 import axios, { AxiosInstance } from 'axios'
 import qs from 'qs'
-import { AkeneoApiConfig, AkeneoRetryConfig, QueryProductModelsParams, QueryProductsParams } from './types'
+import {
+  AkeneoApiConfig,
+  AkeneoRetryConfig,
+  GetProductModelParams,
+  GetProductParams,
+  QueryProductModelsParams,
+  QueryProductsParams,
+} from './types'
 import { AkeneoAuth } from '../'
 import { AkeneoError } from '../error'
 import { DEFAULT_REQUEST_TIMEOUT_MS } from '../constants'
 import { calculateDelay } from '../utils'
 import { Status } from '@tshttp/status'
+import { Product, ProductModel, Results } from '../types'
 
 export interface FetchOptions<T = Record<string, any>> {
   /**
@@ -169,10 +177,22 @@ export class AkeneoApi {
   }
 
   /**
+   * Get a product
+   * https://api.akeneo.com/api-reference.html#get_products__code_
+   */
+  getProduct(options: CommonRequestOptions & GetProductParams): Promise<Product> {
+    return this.request({
+      ...this.extractCommonRequestOptions(options),
+      path: `/products/${options.code}`,
+      method: 'GET',
+    })
+  }
+
+  /**
    * Query products
    * https://api.akeneo.com/api-reference.html#get_products
    */
-  queryProducts(options?: CommonRequestOptions & { params?: QueryProductsParams }): Promise<any> {
+  queryProducts(options?: QueryProductsParams): Promise<Results<Product>> {
     return this.request({
       ...this.extractCommonRequestOptions(options),
       path: `/products`,
@@ -181,10 +201,22 @@ export class AkeneoApi {
   }
 
   /**
+   * Get a product model
+   * https://api.akeneo.com/api-reference.html#get_product_models__code_
+   */
+  getProductModel(options: CommonRequestOptions & GetProductModelParams): Promise<ProductModel> {
+    return this.request({
+      ...this.extractCommonRequestOptions(options),
+      path: `/product-models/${options.code}`,
+      method: 'GET',
+    })
+  }
+
+  /**
    * Query product models
    * https://api.akeneo.com/api-reference.html#get_product_models
    */
-  queryProductModels(options?: CommonRequestOptions & { params?: QueryProductModelsParams }): Promise<any> {
+  queryProductModels(options?: QueryProductModelsParams): Promise<Results<ProductModel>> {
     return this.request({
       ...this.extractCommonRequestOptions(options),
       path: `/product-models`,
