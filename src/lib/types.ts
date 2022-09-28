@@ -26,16 +26,8 @@ export interface ProductModel {
   parent: string
   /** Codes of the categories in which the product model is categorized */
   categories: string[]
-  values: {
-    attributeCode: {
-      /** Channel code of the product value */
-      scope: string
-      /** Locale code of the product value */
-      locale: string
-      /** Product value */
-      data: any
-    }[]
-  }
+  values: AttributeValues
+
   associations: {
     associationTypeCode: {
       /** Array of groups codes with which the product is in relation */
@@ -89,18 +81,7 @@ export interface Product {
   /** Code of the parent product model when the product is a variant (only available since the 2.0). This parent can be modified since the 2.3. */
   parent: string
 
-  values: {
-    attributeCode: {
-      /** Channel code of the product value */
-      scope: string
-      /** Locale code of the product value */
-      locale: string
-      /** Product value. See the `data` format section for more details. */
-      data: any
-      /** Object containing labels of attribute options (only available since the 5.0 and when query parameter "with_attribute_options" is set to "true"). See the `linked_data` format section for more details. */
-      linked_data: any
-    }[]
-  }
+  values: AttributeValues
 
   associations: {
     associationTypeCode: {
@@ -153,6 +134,140 @@ export interface AttributeOption {
   /** Locale/string pairs, e.g. { en_GB: 'Some English text' } */
   labels: Record<string, string>
 }
+
+export interface Attribute {
+  /** Attribute code */
+  code: string
+
+  /** Attribute type. See type section for more details. */
+  type: string
+
+  labels: Record<string, string>
+
+  /** Attribute group */
+  group: string
+
+  group_labels: Record<string, string>
+  /** Order of the attribute in its group */
+  sort_order: number
+
+  /** Whether the attribute is localizable, i.e. can have one value by locale */
+  localizable: boolean
+
+  /** Whether the attribute is scopable, i.e. can have one value by channel */
+  scopable: boolean
+
+  /** To make the attribute locale specific, specify here for which locales it is specific */
+  available_locales: string[]
+
+  /** Whether two values for the attribute cannot be the same */
+  unique: boolean
+
+  /** Whether the attribute can be used as a filter for the product grid in the PIM user interface */
+  useable_as_grid_filter: boolean
+
+  /** Number maximum of characters allowed for the value of the attribute when the attribute type is `pim_catalog_text`, `pim_catalog_textarea` or `pim_catalog_identifier` */
+  max_characters?: number | undefined
+
+  /** Validation rule type used to validate any attribute value when the attribute type is `pim_catalog_text` or `pim_catalog_identifier` */
+  validation_rule?: string | undefined
+
+  /** Regexp expression used to validate any attribute value when the attribute type is `pim_catalog_text` or `pim_catalog_identifier` */
+  validation_regexp?: string | undefined
+
+  /** Whether the WYSIWYG interface is shown when the attribute type is `pim_catalog_textarea` */
+  wysiwyg_enabled?: boolean | undefined
+
+  /** Minimum integer value allowed when the attribute type is `pim_catalog_metric`, `pim_catalog_price` or `pim_catalog_number` */
+  number_min?: string | undefined
+
+  /** Maximum integer value allowed when the attribute type is `pim_catalog_metric`, `pim_catalog_price` or `pim_catalog_number` */
+  number_max?: string | undefined
+
+  /** Whether decimals are allowed when the attribute type is `pim_catalog_metric`, `pim_catalog_price` or `pim_catalog_number` */
+  decimals_allowed?: boolean | undefined
+
+  /** Whether negative values are allowed when the attribute type is `pim_catalog_metric` or `pim_catalog_number` */
+  negative_allowed?: boolean | undefined
+
+  /** Metric family when the attribute type is `pim_catalog_metric` */
+  metric_family?: string | undefined
+
+  /** Default metric unit when the attribute type is `pim_catalog_metric` */
+  default_metric_unit?: string | undefined
+
+  /** Minimum date allowed when the attribute type is `pim_catalog_date` */
+  date_min?: string | undefined
+
+  /** Maximum date allowed when the attribute type is `pim_catalog_date` */
+  date_max?: string | undefined
+
+  /** Extensions allowed when the attribute type is `pim_catalog_file` or `pim_catalog_image` */
+  allowed_extensions?: string[] | undefined
+
+  /** Max file size in MB when the attribute type is `pim_catalog_file` or `pim_catalog_image` */
+  max_file_size?: string | undefined
+
+  /** Reference entity code when the attribute type is `akeneo_reference_entity` or `akeneo_reference_entity_collection` OR Asset family code when the attribute type is `pim_catalog_asset_collection` */
+  reference_data_name?: string | undefined
+
+  /** Default value for a Yes/No attribute, applied when creating a new product or product model (only available since the 5.0) */
+  default_value?: boolean | undefined
+
+  /** Configuration of the Table attribute (columns) */
+  table_configuration: any[]
+}
+
+export interface ReferenceEntity {
+  /** Reference entity code */
+  code: string
+
+  /** Locale/string pairs, e.g. { en_GB: 'Some English text' } */
+  labels: Record<string, string>
+
+  image?: string | undefined
+}
+
+export interface ReferenceEntityRecord {
+  _links: {
+    image_download: {
+      /** URI to download the binaries of the reference entity image file */
+      href: string
+    }
+  }
+
+  /** Reference entity code */
+  code: string
+
+  /** Locale/string pairs, e.g. { en_GB: 'Some English text' } */
+  labels: Record<string, string>
+
+  /** Code of the reference entity image */
+  image?: string | undefined
+}
+
+export interface AttributeValueItem {
+  /** Channel code of the product value */
+  scope: string | null
+
+  /** Locale code of the product value */
+  locale: string | null
+
+  /** Product value */
+  data: any
+
+  /**
+   * Object containing labels of attribute options (only available since the 5.0 and
+   * when query parameter "with_attribute_options" is set to "true"). See the `linked_data`
+   * format section for more details:
+   * https://api.akeneo.com/concepts/products.html#the-linked_data-format
+   */
+  linked_data: any
+}
+
+export type AttributeValue = AttributeValueItem[]
+
+export type AttributeValues = Record<string, AttributeValue>
 
 /**
  * Interface for the generic results container

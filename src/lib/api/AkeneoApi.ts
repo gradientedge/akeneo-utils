@@ -8,8 +8,11 @@ import {
   GetProductParams,
   GetListOfProductModelsParams,
   GetListOfProductsParams,
+  GetListOfAttributesParams,
+  GetListOfReferenceEntitiesParams,
+  GetListOfReferenceEntityRecordsParams,
 } from './types'
-import { AkeneoAuth, AttributeOption } from '../'
+import { AkeneoAuth, Attribute, AttributeOption, ReferenceEntity, ReferenceEntityRecord } from '../'
 import { AkeneoError } from '../error'
 import { DEFAULT_REQUEST_TIMEOUT_MS } from '../constants'
 import { calculateDelay } from '../utils'
@@ -24,7 +27,14 @@ export interface FetchOptions<T = Record<string, any>> {
    *
    * Example: `/products`
    */
-  path: string
+  path?: string | undefined
+
+  /**
+   * URL to follow
+   *
+   * This must be provided if the {@see path} property is undefined
+   */
+  url?: string | undefined
 
   /**
    * Key/value pairs representing the HTTP headers to send
@@ -226,16 +236,67 @@ export class AkeneoApi {
   }
 
   /**
+   * Get list of attributes
+   * https://api.akeneo.com/api-reference.html#get_attributes__attribute_code__options
+   */
+  getListOfAttributes(options: CommonRequestOptions & GetListOfAttributesParams): Promise<Results<Attribute>> {
+    return this.request({
+      ...this.extractCommonRequestOptions(options),
+      path: `/attributes`,
+      method: 'GET',
+    })
+  }
+
+  /**
    * Get list of attribute options
    * https://api.akeneo.com/api-reference.html#get_attributes__attribute_code__options
    */
   getListOfAttributeOptions(
     options: CommonRequestOptions & GetListOfAttributeOptionsParams,
-  ): Promise<AttributeOption[]> {
+  ): Promise<Results<AttributeOption>> {
     return this.request({
       ...this.extractCommonRequestOptions(options),
       path: `/attributes/${options.attributeCode}/options`,
       method: 'GET',
+    })
+  }
+
+  /**
+   * Get a list of reference entities
+   * https://api.akeneo.com/api-reference.html#get_reference_entities
+   */
+  getListOfReferenceEntities(
+    options: CommonRequestOptions & GetListOfReferenceEntitiesParams,
+  ): Promise<Results<ReferenceEntity>> {
+    return this.request({
+      ...this.extractCommonRequestOptions(options),
+      path: `/reference-entities`,
+      method: 'GET',
+    })
+  }
+
+  /**
+   * Get a list of reference entity records
+   * https://api.akeneo.com/api-reference.html#get_reference_entity_records
+   */
+  getListOfReferenceEntityRecords(
+    options: CommonRequestOptions & GetListOfReferenceEntityRecordsParams,
+  ): Promise<Results<ReferenceEntityRecord>> {
+    return this.request({
+      ...this.extractCommonRequestOptions(options),
+      path: `/reference-entities/${options.referenceEntityCode}/records`,
+      method: 'GET',
+    })
+  }
+
+  /**
+   * Get a list of reference entities
+   * https://api.akeneo.com/api-reference.html#get_reference_entities
+   */
+  followLink<T = any>(options: { url: string }): Promise<Results<T>> {
+    return this.request({
+      method: 'GET',
+      url: options.url,
     })
   }
 
@@ -317,9 +378,10 @@ export class AkeneoApi {
    * making the request to akeneo.
    */
   async getRequestOptions(options: FetchOptions) {
-    const url = `${this.endpoint}${options.path}`
+    const url = options.url ?? `${this.endpoint}${options.path}`
     const opts: any = { ...options }
     opts.path && delete opts.path
+    opts.url && delete opts.url
 
     const grant = await this.auth.getClientGrant()
 
