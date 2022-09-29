@@ -74,6 +74,9 @@ export interface GetProductParams extends CommonRequestOptions {
 }
 
 export interface GetListOfProductsParams extends CommonRequestOptions {
+  /** Whether the `_links.next.href` should be followed until all pages are loaded */
+  fetchAll?: boolean | undefined
+
   params?: {
     /**
      * Filter products, for more details see https://api.akeneo.com/documentation/filter.html
@@ -146,6 +149,9 @@ export interface GetListOfProductsParams extends CommonRequestOptions {
 }
 
 export interface GetListOfProductModelsParams extends CommonRequestOptions {
+  /** Whether the `_links.next.href` should be followed until all pages are loaded */
+  fetchAll?: boolean | undefined
+
   params?: {
     /**
      * Filter products, for more details see https://api.akeneo.com/documentation/filter.html
@@ -208,9 +214,10 @@ export interface GetListOfProductModelsParams extends CommonRequestOptions {
 }
 
 export interface GetListOfAttributeOptionsParams extends CommonRequestOptions {
-  /**
-   * The attribute code
-   */
+  /** Whether the `_links.next.href` should be followed until all pages are loaded */
+  fetchAll?: boolean | undefined
+
+  /** The attribute code */
   attributeCode: string
 
   params?: {
@@ -234,6 +241,9 @@ export interface GetListOfAttributeOptionsParams extends CommonRequestOptions {
 }
 
 export interface GetListOfAttributesParams extends CommonRequestOptions {
+  /** Whether the `_links.next.href` should be followed until all pages are loaded */
+  fetchAll?: boolean | undefined
+
   params?: {
     /**
      * Filter products, for more details see https://api.akeneo.com/documentation/filter.html#filter-attributes
@@ -260,6 +270,9 @@ export interface GetListOfAttributesParams extends CommonRequestOptions {
 }
 
 export interface GetListOfReferenceEntitiesParams extends CommonRequestOptions {
+  /** Whether the `_links.next.href` should be followed until all pages are loaded */
+  fetchAll?: boolean | undefined
+
   params?: {
     /**
      * Filter products, for more details see https://api.akeneo.com/documentation/filter.html#filter-attributes
@@ -269,6 +282,9 @@ export interface GetListOfReferenceEntitiesParams extends CommonRequestOptions {
 }
 
 export interface GetListOfReferenceEntityRecordsParams extends CommonRequestOptions {
+  /** Whether the `_links.next.href` should be followed until all pages are loaded */
+  fetchAll?: boolean | undefined
+
   /** Code of the reference entity for which you want the records */
   referenceEntityCode: string
 

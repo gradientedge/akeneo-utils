@@ -203,12 +203,16 @@ export class AkeneoApi {
    * Get a list of products
    * https://api.akeneo.com/api-reference.html#get_products
    */
-  getListOfProducts(options?: GetListOfProductsParams): Promise<Results<Product>> {
-    return this.request({
+  async getListOfProducts(options?: GetListOfProductsParams): Promise<Results<Product>> {
+    const response = await this.request({
       ...this.extractCommonRequestOptions(options),
       path: `/products`,
       method: 'GET',
     })
+    if (options?.fetchAll) {
+      await this.appendRemainingPages({ response })
+    }
+    return response
   }
 
   /**
@@ -227,66 +231,86 @@ export class AkeneoApi {
    * Get a list of product models
    * https://api.akeneo.com/api-reference.html#get_product_models
    */
-  getListOfProductModels(options?: GetListOfProductModelsParams): Promise<Results<ProductModel>> {
-    return this.request({
+  async getListOfProductModels(options?: GetListOfProductModelsParams): Promise<Results<ProductModel>> {
+    const response = await this.request<any, Results<ProductModel>>({
       ...this.extractCommonRequestOptions(options),
       path: `/product-models`,
       method: 'GET',
     })
+    if (options?.fetchAll) {
+      await this.appendRemainingPages({ response })
+    }
+    return response
   }
 
   /**
    * Get list of attributes
    * https://api.akeneo.com/api-reference.html#get_attributes__attribute_code__options
    */
-  getListOfAttributes(options: CommonRequestOptions & GetListOfAttributesParams): Promise<Results<Attribute>> {
-    return this.request({
+  async getListOfAttributes(options: CommonRequestOptions & GetListOfAttributesParams): Promise<Results<Attribute>> {
+    const response = await this.request({
       ...this.extractCommonRequestOptions(options),
       path: `/attributes`,
       method: 'GET',
     })
+    if (options?.fetchAll) {
+      await this.appendRemainingPages({ response })
+    }
+    return response
   }
 
   /**
    * Get list of attribute options
    * https://api.akeneo.com/api-reference.html#get_attributes__attribute_code__options
    */
-  getListOfAttributeOptions(
+  async getListOfAttributeOptions(
     options: CommonRequestOptions & GetListOfAttributeOptionsParams,
   ): Promise<Results<AttributeOption>> {
-    return this.request({
+    const response = await this.request({
       ...this.extractCommonRequestOptions(options),
       path: `/attributes/${options.attributeCode}/options`,
       method: 'GET',
     })
+    if (options?.fetchAll) {
+      await this.appendRemainingPages({ response })
+    }
+    return response
   }
 
   /**
    * Get a list of reference entities
    * https://api.akeneo.com/api-reference.html#get_reference_entities
    */
-  getListOfReferenceEntities(
+  async getListOfReferenceEntities(
     options: CommonRequestOptions & GetListOfReferenceEntitiesParams,
   ): Promise<Results<ReferenceEntity>> {
-    return this.request({
+    const response = await this.request({
       ...this.extractCommonRequestOptions(options),
       path: `/reference-entities`,
       method: 'GET',
     })
+    if (options?.fetchAll) {
+      await this.appendRemainingPages({ response })
+    }
+    return response
   }
 
   /**
    * Get a list of reference entity records
    * https://api.akeneo.com/api-reference.html#get_reference_entity_records
    */
-  getListOfReferenceEntityRecords(
+  async getListOfReferenceEntityRecords(
     options: CommonRequestOptions & GetListOfReferenceEntityRecordsParams,
   ): Promise<Results<ReferenceEntityRecord>> {
-    return this.request({
+    const response = await this.request({
       ...this.extractCommonRequestOptions(options),
       path: `/reference-entities/${options.referenceEntityCode}/records`,
       method: 'GET',
     })
+    if (options?.fetchAll) {
+      await this.appendRemainingPages({ response })
+    }
+    return response
   }
 
   /**
@@ -298,6 +322,21 @@ export class AkeneoApi {
       method: 'GET',
       url: options.url,
     })
+  }
+
+  /**
+   * Get all pages for a given {@see Results} object
+   */
+  async appendRemainingPages(options: { response: Results }) {
+    let nextHref = options.response._links.next?.href
+    while (nextHref) {
+      const nextResponse = await this.followLink({ url: nextHref })
+      options.response._embedded.items.push(...nextResponse._embedded.items)
+      nextHref = nextResponse._links.next?.href
+    }
+    options.response._links = {
+      first: options.response._links.first,
+    }
   }
 
   getClientGrant() {
