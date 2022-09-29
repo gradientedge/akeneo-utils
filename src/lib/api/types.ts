@@ -266,6 +266,12 @@ export interface GetListOfAttributesParams extends CommonRequestOptions {
      * it can decrease performance in a significant way
      */
     with_count?: boolean | undefined
+
+    /**
+     * Return the options of 'select' column types (of a table attribute) in the response.
+     * (Only available on SaaS platforms)
+     * */
+    with_table_select_options?: boolean | undefined
   }
 }
 
