@@ -3,16 +3,27 @@ import qs from 'qs'
 import {
   AkeneoApiConfig,
   AkeneoRetryConfig,
+  GetFamilyParams,
   GetListOfAttributeOptionsParams,
-  GetProductModelParams,
-  GetProductParams,
+  GetListOfAttributesParams,
+  GetListOfFamiliesParams,
+  GetListOfFamilyVariantsParams,
   GetListOfProductModelsParams,
   GetListOfProductsParams,
-  GetListOfAttributesParams,
   GetListOfReferenceEntitiesParams,
   GetListOfReferenceEntityRecordsParams,
+  GetProductModelParams,
+  GetProductParams,
 } from './types'
-import { AkeneoAuth, Attribute, AttributeOption, ReferenceEntity, ReferenceEntityRecord } from '../'
+import {
+  AkeneoAuth,
+  Attribute,
+  AttributeOption,
+  Family,
+  FamilyVariant,
+  ReferenceEntity,
+  ReferenceEntityRecord,
+} from '../'
 import { AkeneoError } from '../error'
 import { DEFAULT_REQUEST_TIMEOUT_MS } from '../constants'
 import { calculateDelay } from '../utils'
@@ -225,6 +236,50 @@ export class AkeneoApi {
       path: `/product-models/${options.code}`,
       method: 'GET',
     })
+  }
+
+  /**
+   * Get a list of families
+   * https://api.akeneo.com/api-reference.html#get_families
+   */
+  async getListOfFamilies(options?: GetListOfFamiliesParams): Promise<Results<Family>> {
+    const response = await this.request({
+      ...this.extractCommonRequestOptions(options),
+      path: `/families`,
+      method: 'GET',
+    })
+    if (options?.fetchAll) {
+      await this.appendRemainingPages({ response })
+    }
+    return response
+  }
+
+  /**
+   * Get a family
+   * https://api.akeneo.com/api-reference.html#get_families__code_
+   */
+  async getFamily(options: GetFamilyParams): Promise<Family> {
+    return await this.request({
+      ...this.extractCommonRequestOptions(options),
+      path: `/families/${options.code}`,
+      method: 'GET',
+    })
+  }
+
+  /**
+   * Get a list of family variants
+   * https://api.akeneo.com/api-reference.html#get_families__family_code__variants
+   */
+  async getListOfFamilyVariants(options: GetListOfFamilyVariantsParams): Promise<Results<FamilyVariant>> {
+    const response = await this.request({
+      ...this.extractCommonRequestOptions(options),
+      path: `/families/${encodeURIComponent(options.code)}/variants`,
+      method: 'GET',
+    })
+    if (options?.fetchAll) {
+      await this.appendRemainingPages({ response })
+    }
+    return response
   }
 
   /**

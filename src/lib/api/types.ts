@@ -213,6 +213,70 @@ export interface GetListOfProductModelsParams extends CommonRequestOptions {
   }
 }
 
+export interface GetListOfFamiliesParams extends CommonRequestOptions {
+  /** Whether the `_links.next.href` should be followed until all pages are loaded */
+  fetchAll?: boolean | undefined
+
+  params?: {
+    /**
+     * Filter families, for more details see:
+     * https://api.akeneo.com/documentation/filter.html#filter-families
+     */
+    search?: string | undefined
+
+    /**
+     * Number of the page to retrieve when using the `page` pagination method type.
+     * Should never be set manually, see https://api.akeneo.com/documentation/pagination.html
+     */
+    page?: number | undefined
+
+    /**
+     * Number of results by page, see https://api.akeneo.com/documentation/pagination.html
+     */
+    limit?: number | undefined
+
+    /**
+     * Return the count of items in the response. Be careful with this. On a big catalog,
+     * it can decrease performance in a significant way
+     */
+    with_count?: boolean | undefined
+  }
+}
+
+export interface GetFamilyParams extends CommonRequestOptions {
+  /**
+   * The product code
+   */
+  code: string
+}
+
+export interface GetListOfFamilyVariantsParams extends CommonRequestOptions {
+  /** Whether the `_links.next.href` should be followed until all pages are loaded */
+  fetchAll?: boolean | undefined
+
+  /** The family code */
+  code: string
+
+  params?: {
+    /**
+     * Number of the page to retrieve when using the `page` pagination method type.
+     * Should never be set manually, see https://api.akeneo.com/documentation/pagination.html
+     */
+    page?: number | undefined
+
+    /**
+     * Number of results by page, see https://api.akeneo.com/documentation/pagination.html
+     */
+    limit?: number | undefined
+
+    /**
+     * Return the count of items in the response. Be careful with this. On a big catalog,
+     * it can decrease performance in a significant way
+     */
+    with_count?: boolean | undefined
+  }
+}
+
 export interface GetListOfAttributeOptionsParams extends CommonRequestOptions {
   /** Whether the `_links.next.href` should be followed until all pages are loaded */
   fetchAll?: boolean | undefined
