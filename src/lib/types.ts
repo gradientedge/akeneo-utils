@@ -11,6 +11,9 @@ export interface AkeneoBaseConfig {
   timeoutMs?: number
 }
 
+export type ChannelCode = string
+export type Locale = string
+
 /**
  * The product model definition
  * Visible in the response body here: https://api.akeneo.com/api-reference.html#get_product_models__code_
@@ -28,8 +31,9 @@ export interface ProductModel {
   categories: string[]
   values: AttributeValues
 
-  associations: {
-    associationTypeCode: {
+  associations: Record<
+    string,
+    {
       /** Array of groups codes with which the product is in relation */
       groups: string[]
       /** Array of product identifiers with which the product is in relation */
@@ -37,15 +41,18 @@ export interface ProductModel {
       /** Array of product model codes with which the product is in relation (only available since the v2.1) */
       product_models: string[]
     }
-  }
-  quantified_associations: {
-    quantifiedAssociationTypeCode: {
+  >
+
+  quantified_associations: Record<
+    string,
+    {
       /** Array of objects containing product identifiers and quantities with which the product model is in relation */
       products: any[]
       /** Array of objects containing product model codes and quantities with which the product model is in relation */
       product_models: any[]
     }
-  }
+  >
+
   /** Date of creation */
   created: string
   /** Date of the last update */
@@ -54,8 +61,16 @@ export interface ProductModel {
     /** Status of the product model regarding the user permissions */
     workflow_status: string
   }
-  /** Product model quality scores for each channel/locale combination (only available on SaaS platforms and when the "with_quality_scores" query parameter is set to "true") */
-  quality_scores: any
+  /**
+   * Product model quality scores for each channel/locale combination
+   * (only available on SaaS platforms and when the "with_quality_scores"
+   * query parameter is set to "true")
+   */
+  quality_scores?: {
+    scope: ChannelCode | null
+    locale: Locale | null
+    data: string
+  }[]
 }
 
 /**
@@ -83,8 +98,9 @@ export interface Product {
 
   values: AttributeValues
 
-  associations: {
-    associationTypeCode: {
+  associations: Record<
+    string,
+    {
       /** Array of groups codes with which the product is in relation */
       groups: string[]
       /** Array of product identifiers with which the product is in relation */
@@ -92,16 +108,17 @@ export interface Product {
       /** Array of product model codes with which the product is in relation (only available since the v2.1) */
       product_models: string[]
     }
-  }
+  >
 
-  quantified_associations: {
-    quantifiedAssociationTypeCode: {
+  quantified_associations: Record<
+    string,
+    {
       /** Array of objects containing product identifiers and quantities with which the product is in relation */
       products: any[]
       /** Array of objects containing product model codes and quantities with which the product is in relation */
       product_models: any[]
     }
-  }
+  >
 
   /** Date of creation */
   created: string
@@ -115,10 +132,81 @@ export interface Product {
   }
 
   /** Product quality scores for each channel/locale combination (only available since the 5.0 and when the "with_quality_scores" query parameter is set to "true") */
-  quality_scores: any
+  quality_scores?: {
+    scope: ChannelCode | null
+    locale: Locale | null
+    data: string
+  }[]
 
   /** Product completenesses for each channel/locale combination (only available on SaaS platforms, and when the "with_completenesses" query parameter is set to "true") */
-  completenesses: any
+  completenesses?: {
+    scope: ChannelCode | null
+    locale: Locale | null
+    data: number
+  }[]
+}
+
+/**
+ * The family definition
+ * Visible in the response body here: https://api.akeneo.com/api-reference.html#get_families
+ */
+export interface Family {
+  _links: {
+    self?: {
+      /** URI of the current resources */
+      href: string
+    }
+  }
+
+  /** Family code */
+  code: string
+
+  /** Attribute code used as label */
+  attribute_as_label: string
+
+  /** Attribute code used as the main picture in the user interface (only since v2.0) */
+  attribute_as_image: string | null
+
+  /** Attributes codes that compose the family */
+  attributes: string[]
+
+  /**
+   * Attributes codes of the family that are required for the completeness
+   * calculation for the channel `channelCode`
+   */
+  attribute_requirements: Record<ChannelCode, string[]>
+
+  /** Locale/string pairs, e.g. { en_GB: 'Some English text' } */
+  labels: Record<Locale, string>
+}
+
+/**
+ * The family definition
+ * Visible in the response body here:
+ * https://api.akeneo.com/api-reference.html#get_families__family_code__variants__code__
+ */
+export interface FamilyVariant {
+  /** Family code */
+  code: string
+
+  /** Attribute set definitions */
+  variant_attribute_sets: {
+    /** Enrichment level */
+    level: number
+    /** Codes of attributes used as variant axes */
+    axes: string[]
+    /** Codes of attributes bind to this enrichment level */
+    attributes: string[]
+  }[]
+
+  /**
+   * Attributes codes of the family that are required for the completeness
+   * calculation for the channel `channelCode`
+   */
+  attribute_requirements: Record<ChannelCode, string[]>
+
+  /** Locale/string pairs, e.g. { en_GB: 'Some English text' } */
+  labels: Record<Locale, string>
 }
 
 export interface AttributeOption {
@@ -132,7 +220,7 @@ export interface AttributeOption {
   sort_order: number
 
   /** Locale/string pairs, e.g. { en_GB: 'Some English text' } */
-  labels: Record<string, string>
+  labels: Record<Locale, string>
 }
 
 export interface Attribute {
@@ -142,12 +230,15 @@ export interface Attribute {
   /** Attribute type. See type section for more details. */
   type: string
 
-  labels: Record<string, string>
+  /** Attribute label by locale */
+  labels: Record<Locale, string>
 
   /** Attribute group */
   group: string
 
-  group_labels: Record<string, string>
+  /** Group label by locale */
+  group_labels: Record<Locale, string>
+
   /** Order of the attribute in its group */
   sort_order: number
 
@@ -158,7 +249,7 @@ export interface Attribute {
   scopable: boolean
 
   /** To make the attribute locale specific, specify here for which locales it is specific */
-  available_locales: string[]
+  available_locales: Locale[]
 
   /** Whether two values for the attribute cannot be the same */
   unique: boolean
@@ -223,7 +314,7 @@ export interface ReferenceEntity {
   code: string
 
   /** Locale/string pairs, e.g. { en_GB: 'Some English text' } */
-  labels: Record<string, string>
+  labels: Record<Locale, string>
 
   image?: string | undefined
 }
@@ -240,7 +331,7 @@ export interface ReferenceEntityRecord {
   code: string
 
   /** Locale/string pairs, e.g. { en_GB: 'Some English text' } */
-  labels: Record<string, string>
+  labels: Record<Locale, string>
 
   /** Code of the reference entity image */
   image?: string | undefined
@@ -248,10 +339,10 @@ export interface ReferenceEntityRecord {
 
 export interface AttributeValueItem {
   /** Channel code of the product value */
-  scope: string | null
+  scope: ChannelCode | null
 
   /** Locale code of the product value */
-  locale: string | null
+  locale: Locale | null
 
   /** Product value */
   data: any
