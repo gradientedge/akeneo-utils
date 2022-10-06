@@ -13,6 +13,7 @@ export interface AkeneoBaseConfig {
 
 export type ChannelCode = string
 export type Locale = string
+export type PaginationType = 'page' | 'search_after'
 
 /**
  * The product model definition

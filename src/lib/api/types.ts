@@ -1,6 +1,7 @@
 import * as https from 'https'
 import { AkeneoAuthConfig } from '../auth'
 import { CommonRequestOptions } from './AkeneoApi'
+import { PaginationType } from '../types'
 
 /**
  * Configuration for constructing the {@see AkeneoApi} class.
@@ -106,7 +107,7 @@ export interface GetListOfProductsParams extends CommonRequestOptions {
     /**
      * Pagination method type, see https://api.akeneo.com/documentation/pagination.html
      */
-    pagination_type?: string | undefined
+    pagination_type?: PaginationType | undefined
 
     /**
      * Number of the page to retrieve when using the `page` pagination method type.
@@ -181,7 +182,7 @@ export interface GetListOfProductModelsParams extends CommonRequestOptions {
     /**
      * Pagination method type, see https://api.akeneo.com/documentation/pagination.html
      */
-    pagination_type?: string | undefined
+    pagination_type?: PaginationType | undefined
 
     /**
      * Number of the page to retrieve when using the `page` pagination method type.
