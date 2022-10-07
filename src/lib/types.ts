@@ -354,7 +354,7 @@ export interface AttributeValueItem {
    * format section for more details:
    * https://api.akeneo.com/concepts/products.html#the-linked_data-format
    */
-  linked_data: any
+  linked_data?: any
 }
 
 export type AttributeValue = AttributeValueItem[]
