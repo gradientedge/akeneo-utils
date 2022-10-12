@@ -311,16 +311,6 @@ export interface Attribute {
 }
 
 export interface ReferenceEntity {
-  /** Reference entity code */
-  code: string
-
-  /** Locale/string pairs, e.g. { en_GB: 'Some English text' } */
-  labels: Record<Locale, string>
-
-  image?: string | undefined
-}
-
-export interface ReferenceEntityRecord {
   _links: {
     image_download: {
       /** URI to download the binaries of the reference entity image file */
@@ -334,18 +324,42 @@ export interface ReferenceEntityRecord {
   /** Locale/string pairs, e.g. { en_GB: 'Some English text' } */
   labels: Record<Locale, string>
 
+  image?: string | undefined
+}
+
+export interface ReferenceEntityRecord {
+  /** Reference entity code */
+  code: string
+
+  values: Record<string, ReferenceEntityRecordAttributeValue>
+  /** Locale/string pairs, e.g. { en_GB: 'Some English text' } */
+  labels: Record<Locale, string>
+
   /** Code of the reference entity image */
   image?: string | undefined
 }
 
-export interface AttributeValueItem {
+export type ReferenceEntityRecordAttributeValue = ReferenceEntityRecordAttributeValueItem[]
+
+export interface ReferenceEntityRecordAttributeValueItem {
   /** Channel code of the product value */
-  scope: ChannelCode | null
+  channel: ChannelCode | null
 
   /** Locale code of the product value */
   locale: Locale | null
 
   /** Product value */
+  data: any
+}
+
+export interface AttributeValueItem {
+  /** Channel code of the attribute data */
+  scope: ChannelCode | null
+
+  /** Locale code of the attribute data */
+  locale: Locale | null
+
+  /** Attribute data */
   data: any
 
   /**
