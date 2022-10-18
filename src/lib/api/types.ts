@@ -36,6 +36,43 @@ export interface AkeneoRetryConfig {
   jitter?: boolean
 }
 
+export interface GetListOfCategoriesParams extends CommonRequestOptions {
+  /**
+   * Whether the `_links.next.href` should be followed until all pages are loaded
+   */
+  fetchAll?: boolean
+
+  params?: {
+    /**
+     * Filter categories, for more details see:
+     * https://api.akeneo.com/documentation/filter.html#filter-categories
+     */
+    search?: string | undefined
+
+    /**
+     * Number of the page to retrieve when using the `page` pagination method type.
+     * Should never be set manually, see https://api.akeneo.com/documentation/pagination.html
+     */
+    page?: number | undefined
+
+    /**
+     * Number of results by page, see https://api.akeneo.com/documentation/pagination.html
+     */
+    limit?: number | undefined
+
+    /**
+     * Return the count of items in the response. Be careful with this. On a big catalog,
+     * it can decrease performance in a significant way
+     */
+    with_count?: boolean | undefined
+
+    /**
+     * Return information about category position into its category tree (only available on SaaS platforms)
+     */
+    with_position?: boolean | undefined
+  }
+}
+
 export interface GetProductModelParams extends CommonRequestOptions {
   /**
    * The product code
@@ -75,7 +112,9 @@ export interface GetProductParams extends CommonRequestOptions {
 }
 
 export interface GetListOfProductsParams extends CommonRequestOptions {
-  /** Whether the `_links.next.href` should be followed until all pages are loaded */
+  /**
+   * Whether the `_links.next.href` should be followed until all pages are loaded
+   */
   fetchAll?: boolean | undefined
 
   params?: {
@@ -150,7 +189,9 @@ export interface GetListOfProductsParams extends CommonRequestOptions {
 }
 
 export interface GetListOfProductModelsParams extends CommonRequestOptions {
-  /** Whether the `_links.next.href` should be followed until all pages are loaded */
+  /**
+   * Whether the `_links.next.href` should be followed until all pages are loaded
+   */
   fetchAll?: boolean | undefined
 
   params?: {
@@ -215,7 +256,9 @@ export interface GetListOfProductModelsParams extends CommonRequestOptions {
 }
 
 export interface GetListOfFamiliesParams extends CommonRequestOptions {
-  /** Whether the `_links.next.href` should be followed until all pages are loaded */
+  /**
+   * Whether the `_links.next.href` should be followed until all pages are loaded
+   */
   fetchAll?: boolean | undefined
 
   params?: {
@@ -252,7 +295,9 @@ export interface GetFamilyParams extends CommonRequestOptions {
 }
 
 export interface GetListOfFamilyVariantsParams extends CommonRequestOptions {
-  /** Whether the `_links.next.href` should be followed until all pages are loaded */
+  /**
+   * Whether the `_links.next.href` should be followed until all pages are loaded
+   */
   fetchAll?: boolean | undefined
 
   /** The family code */
@@ -279,7 +324,9 @@ export interface GetListOfFamilyVariantsParams extends CommonRequestOptions {
 }
 
 export interface GetListOfAttributeOptionsParams extends CommonRequestOptions {
-  /** Whether the `_links.next.href` should be followed until all pages are loaded */
+  /**
+   * Whether the `_links.next.href` should be followed until all pages are loaded
+   */
   fetchAll?: boolean | undefined
 
   /** The attribute code */
@@ -306,7 +353,9 @@ export interface GetListOfAttributeOptionsParams extends CommonRequestOptions {
 }
 
 export interface GetListOfAttributesParams extends CommonRequestOptions {
-  /** Whether the `_links.next.href` should be followed until all pages are loaded */
+  /**
+   * Whether the `_links.next.href` should be followed until all pages are loaded
+   */
   fetchAll?: boolean | undefined
 
   params?: {
@@ -341,7 +390,9 @@ export interface GetListOfAttributesParams extends CommonRequestOptions {
 }
 
 export interface GetListOfReferenceEntitiesParams extends CommonRequestOptions {
-  /** Whether the `_links.next.href` should be followed until all pages are loaded */
+  /**
+   * Whether the `_links.next.href` should be followed until all pages are loaded
+   */
   fetchAll?: boolean | undefined
 
   params?: {
@@ -353,7 +404,9 @@ export interface GetListOfReferenceEntitiesParams extends CommonRequestOptions {
 }
 
 export interface GetListOfReferenceEntityRecordsParams extends CommonRequestOptions {
-  /** Whether the `_links.next.href` should be followed until all pages are loaded */
+  /**
+   * Whether the `_links.next.href` should be followed until all pages are loaded
+   */
   fetchAll?: boolean | undefined
 
   /** Code of the reference entity for which you want the records */
