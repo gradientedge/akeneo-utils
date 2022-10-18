@@ -16,6 +16,27 @@ export type Locale = string
 export type PaginationType = 'page' | 'search_after'
 
 /**
+ * The category definition
+ * Visible in the response body here: https://api.akeneo.com/api-reference.html#get_categories__code_
+ */
+export interface Category {
+  /** Category code */
+  code: string
+
+  /** Code of the parent category (if it has one) */
+  parent: string | null
+
+  /** Position of the category in its level, start from 1 (only available on SaaS platforms and when query parameter "with_position" is set to "true" */
+  position?: number
+
+  /** Locale/string pairs, e.g. { en_GB: 'Some English text' } */
+  labels: Record<Locale, string>
+
+  /** Date of the last update */
+  updated: string
+}
+
+/**
  * The product model definition
  * Visible in the response body here: https://api.akeneo.com/api-reference.html#get_product_models__code_
  */

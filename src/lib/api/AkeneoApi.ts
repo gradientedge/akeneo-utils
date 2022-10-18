@@ -6,6 +6,7 @@ import {
   GetFamilyParams,
   GetListOfAttributeOptionsParams,
   GetListOfAttributesParams,
+  GetListOfCategoriesParams,
   GetListOfFamiliesParams,
   GetListOfFamilyVariantsParams,
   GetListOfProductModelsParams,
@@ -19,6 +20,7 @@ import {
   AkeneoAuth,
   Attribute,
   AttributeOption,
+  Category,
   Family,
   FamilyVariant,
   ReferenceEntity,
@@ -196,6 +198,22 @@ export class AkeneoApi {
     this.endpoint = `${this.config.endpoint}/api/rest/v1`
     this.axios = this.createAxiosInstance()
     this.retry = config.retry || DEFAULT_RETRY_CONFIG
+  }
+
+  /**
+   * Get a list of categories
+   * https://api.akeneo.com/api-reference.html#get_categories
+   */
+  async getListOfCategories(options: GetListOfCategoriesParams): Promise<Results<Category>> {
+    const response = await this.request({
+      ...this.extractCommonRequestOptions(options),
+      path: `/categories`,
+      method: 'GET',
+    })
+    if (options?.fetchAll) {
+      await this.appendRemainingPages({ response })
+    }
+    return response
   }
 
   /**
