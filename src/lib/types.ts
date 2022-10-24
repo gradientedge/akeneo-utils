@@ -397,6 +397,24 @@ export type AttributeValue = AttributeValueItem[]
 export type AttributeValues = Record<string, AttributeValue>
 
 /**
+ * The asset definition
+ * Visible in the response body here: https://api.akeneo.com/api-reference.html#get_assets__code_
+ */
+export interface Asset {
+  /** Asset code */
+  code: string
+
+  /** Attribute values **/
+  values: AttributeValues
+
+  /** Date of creation */
+  created: string
+
+  /** Date of the last update */
+  updated: string
+}
+
+/**
  * Interface for the generic results container
  */
 export interface Results<T = any> {
