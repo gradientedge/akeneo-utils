@@ -3,6 +3,7 @@ import qs from 'qs'
 import {
   AkeneoApiConfig,
   AkeneoRetryConfig,
+  GetAssetParams,
   GetFamilyParams,
   GetListOfAttributeOptionsParams,
   GetListOfAttributesParams,
@@ -18,6 +19,7 @@ import {
 } from './types'
 import {
   AkeneoAuth,
+  Asset,
   Attribute,
   AttributeOption,
   Category,
@@ -384,6 +386,18 @@ export class AkeneoApi {
       await this.appendRemainingPages({ response })
     }
     return response
+  }
+
+  /**
+   * Get an asset based on it's code and asset family code
+   * https://api.akeneo.com/api-reference.html#get_assets__code_
+   */
+  async getAsset(options: GetAssetParams): Promise<Asset> {
+    return await this.request({
+      ...this.extractCommonRequestOptions(options),
+      path: `/asset-families/${options.assetFamilyCode}/assets/${options.code}`,
+      method: 'GET',
+    })
   }
 
   /**

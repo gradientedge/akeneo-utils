@@ -443,3 +443,15 @@ export interface GetListOfReferenceEntityRecordsParams extends CommonRequestOpti
     search_after?: string | undefined
   }
 }
+
+export interface GetAssetParams extends CommonRequestOptions {
+  /**
+   * The asset code
+   */
+  code: string
+
+  /**
+   * The asset family code
+   */
+  assetFamilyCode: string
+}
