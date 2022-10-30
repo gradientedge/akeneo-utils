@@ -299,6 +299,166 @@ describe('AkeneoApi', () => {
           expect(result).toEqual({ success: true })
         })
       })
+
+      describe('with 429 response status code', function () {
+        it('should retry after 2 seconds when a 2 second delay is indicated', async () => {
+          const startTime = Date.now()
+          const scope1 = nock('https://test-endpoint')
+            .get('/api/rest/v1/products')
+            .reply(429, {}, { 'Retry-After': '2' })
+          const scope2 = nock('https://test-endpoint').get('/api/rest/v1/products').reply(200, { success: 1 })
+          const api = new AkeneoApi({
+            ...defaultConfig,
+            retry: {
+              delayMs: 300,
+              maxRetries: 0,
+              max429Retries: 4,
+            },
+          })
+
+          scope1.isDone()
+          scope2.isDone()
+          await expect(api.getListOfProducts()).resolves.toEqual({ success: 1 })
+          const duration = Date.now() - startTime
+          expect(duration).toBeGreaterThanOrEqual(2000)
+        })
+
+        it('should retry after 3 seconds when a 3 second delay is indicated', async () => {
+          const startTime = Date.now()
+          const scope1 = nock('https://test-endpoint')
+            .get('/api/rest/v1/products')
+            .reply(429, {}, { 'Retry-After': '3' })
+          const scope2 = nock('https://test-endpoint').get('/api/rest/v1/products').reply(200, { success: 1 })
+          const api = new AkeneoApi({
+            ...defaultConfig,
+            retry: {
+              delayMs: 300,
+              maxRetries: 0,
+              max429Retries: 4,
+            },
+          })
+
+          scope1.isDone()
+          scope2.isDone()
+          await expect(api.getListOfProducts()).resolves.toEqual({ success: 1 })
+          const duration = Date.now() - startTime
+          expect(duration).toBeGreaterThanOrEqual(3000)
+        })
+
+        it('should retry after 4 seconds when a 4 second delay is indicated', async () => {
+          const startTime = Date.now()
+          const scope1 = nock('https://test-endpoint')
+            .get('/api/rest/v1/products')
+            .reply(429, {}, { 'Retry-After': '4' })
+          const scope2 = nock('https://test-endpoint').get('/api/rest/v1/products').reply(200, { success: 1 })
+          const api = new AkeneoApi({
+            ...defaultConfig,
+            retry: {
+              delayMs: 300,
+              maxRetries: 0,
+              max429Retries: 4,
+            },
+          })
+
+          scope1.isDone()
+          scope2.isDone()
+          await expect(api.getListOfProducts()).resolves.toEqual({ success: 1 })
+          const duration = Date.now() - startTime
+          expect(duration).toBeGreaterThanOrEqual(4000)
+        })
+
+        it('should retry 3 times, waiting 2 seconds each when a 2 second delay is indicated and max retries is 4', async () => {
+          const startTime = Date.now()
+          const scope1 = nock('https://test-endpoint')
+            .get('/api/rest/v1/products')
+            .reply(429, {}, { 'Retry-After': '2' })
+          const scope2 = nock('https://test-endpoint')
+            .get('/api/rest/v1/products')
+            .reply(429, {}, { 'Retry-After': '2' })
+          const scope3 = nock('https://test-endpoint')
+            .get('/api/rest/v1/products')
+            .reply(429, {}, { 'Retry-After': '2' })
+          const scope4 = nock('https://test-endpoint').get('/api/rest/v1/products').reply(200, { success: 1 })
+          const api = new AkeneoApi({
+            ...defaultConfig,
+            retry: {
+              delayMs: 300,
+              maxRetries: 0,
+              max429Retries: 4,
+            },
+          })
+
+          scope1.isDone()
+          scope2.isDone()
+          scope3.isDone()
+          scope4.isDone()
+          await expect(api.getListOfProducts()).resolves.toEqual({ success: 1 })
+          const duration = Date.now() - startTime
+          expect(duration).toBeGreaterThanOrEqual(6000)
+        })
+
+        it('should throw a 429 error after failing to get a successful response after the default 5 retry attempts', async () => {
+          const scope1 = nock('https://test-endpoint')
+            .get('/api/rest/v1/products')
+            .reply(429, {}, { 'Retry-After': '1' })
+          const scope2 = nock('https://test-endpoint')
+            .get('/api/rest/v1/products')
+            .reply(429, {}, { 'Retry-After': '1' })
+          const scope3 = nock('https://test-endpoint')
+            .get('/api/rest/v1/products')
+            .reply(429, {}, { 'Retry-After': '1' })
+          const scope4 = nock('https://test-endpoint')
+            .get('/api/rest/v1/products')
+            .reply(429, {}, { 'Retry-After': '1' })
+          const scope5 = nock('https://test-endpoint')
+            .get('/api/rest/v1/products')
+            .reply(429, {}, { 'Retry-After': '1' })
+          const scope6 = nock('https://test-endpoint')
+            .get('/api/rest/v1/products')
+            .reply(429, {}, { 'Retry-After': '1' })
+          const api = new AkeneoApi({
+            ...defaultConfig,
+          })
+
+          scope1.isDone()
+          scope2.isDone()
+          scope3.isDone()
+          scope4.isDone()
+          scope5.isDone()
+          scope6.isDone()
+          await expect(api.getListOfProducts()).rejects.toThrow('Request failed with status code 429')
+        })
+
+        it('should throw 200 after getting a successful response after the default 5 retry attempts', async () => {
+          const scope1 = nock('https://test-endpoint')
+            .get('/api/rest/v1/products')
+            .reply(429, {}, { 'Retry-After': '1' })
+          const scope2 = nock('https://test-endpoint')
+            .get('/api/rest/v1/products')
+            .reply(429, {}, { 'Retry-After': '1' })
+          const scope3 = nock('https://test-endpoint')
+            .get('/api/rest/v1/products')
+            .reply(429, {}, { 'Retry-After': '1' })
+          const scope4 = nock('https://test-endpoint')
+            .get('/api/rest/v1/products')
+            .reply(429, {}, { 'Retry-After': '1' })
+          const scope5 = nock('https://test-endpoint')
+            .get('/api/rest/v1/products')
+            .reply(429, {}, { 'Retry-After': '1' })
+          const scope6 = nock('https://test-endpoint').get('/api/rest/v1/products').reply(200, { success: 1 })
+          const api = new AkeneoApi({
+            ...defaultConfig,
+          })
+
+          scope1.isDone()
+          scope2.isDone()
+          scope3.isDone()
+          scope4.isDone()
+          scope5.isDone()
+          scope6.isDone()
+          await expect(api.getListOfProducts()).resolves.toEqual({ success: 1 })
+        })
+      })
     })
 
     describe('masking', () => {
