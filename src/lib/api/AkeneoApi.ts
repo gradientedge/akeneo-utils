@@ -29,7 +29,7 @@ import {
   ReferenceEntityRecord,
 } from '../'
 import { AkeneoError } from '../error'
-import { DEFAULT_REQUEST_TIMEOUT_MS } from '../constants'
+import { DEFAULT_429_DELAY_MS, DEFAULT_REQUEST_TIMEOUT_MS } from '../constants'
 import { calculateDelay } from '../utils'
 import { Status } from '@tshttp/status'
 import { Product, ProductModel, Results } from '../types'
@@ -117,9 +117,11 @@ export interface FetchOptions<T = Record<string, any>> {
 /**
  * Default retry configuration - equates to no retying at all
  */
-const DEFAULT_RETRY_CONFIG: AkeneoRetryConfig = {
-  maxRetries: 0,
+const DEFAULT_RETRY_CONFIG: Required<AkeneoRetryConfig> = {
   delayMs: 0,
+  maxRetries: 0,
+  max429Retries: 5,
+  jitter: false,
 }
 
 /**
@@ -131,6 +133,7 @@ const RETRYABLE_STATUS_CODES: number[] = [
   Status.BadGateway,
   Status.ServiceUnavailable,
   Status.GatewayTimeout,
+  Status.TooManyRequests,
 ]
 
 /**
@@ -199,7 +202,7 @@ export class AkeneoApi {
     this.auth = new AkeneoAuth(config)
     this.endpoint = `${this.config.endpoint}/api/rest/v1`
     this.axios = this.createAxiosInstance()
-    this.retry = config.retry || DEFAULT_RETRY_CONFIG
+    this.retry = { ...DEFAULT_RETRY_CONFIG, ...config.retry }
   }
 
   /**
@@ -466,28 +469,57 @@ export class AkeneoApi {
   async request<T = any, R = any>(options: FetchOptions<T>): Promise<R> {
     const requestConfig = await this.getRequestOptions(options)
     const retryConfig = this.getRetryConfig(options.retry)
+
     let retryCount = 0
+    let retry429Count = 0
     let lastError: any
+    let delay429Ms = 0
 
     do {
-      if (retryCount > 0) {
+      if (delay429Ms) {
+        await new Promise((resolve) => setTimeout(resolve, delay429Ms))
+        delay429Ms = 0
+      } else if (retryCount > 0) {
         const delay = calculateDelay(retryCount, retryConfig)
         await new Promise((resolve) => setTimeout(resolve, delay))
       }
       try {
         const response = await this.axios(requestConfig)
         return response.data
-      } catch (error) {
+      } catch (error: any) {
         if (this.isRetryableError(error)) {
+          if (error.response?.status === Status.TooManyRequests) {
+            delay429Ms = this.getRetryAfterMs(error.response?.headers)
+            retry429Count++
+            retryCount = 0
+          } else {
+            retryCount++
+          }
           lastError = error
         } else {
           throw this.transformError(error)
         }
       }
-      retryCount++
-    } while (retryCount <= retryConfig.maxRetries)
+    } while (retryCount <= retryConfig.maxRetries && retry429Count <= retryConfig.max429Retries)
 
     throw this.transformError(lastError)
+  }
+
+  /**
+   * Get the number of milliseconds to delay for based on the 'Retry-After' header
+   */
+  getRetryAfterMs(headers?: Record<string, string | null | undefined> | undefined | null) {
+    let delay429Ms = DEFAULT_429_DELAY_MS
+    if (headers) {
+      const retryAfterString = headers['retry-after']
+      if (typeof retryAfterString === 'string') {
+        const retryAfterSecs = parseInt(retryAfterString, 10)
+        if (!isNaN(retryAfterSecs)) {
+          delay429Ms = retryAfterSecs * 1000
+        }
+      }
+    }
+    return delay429Ms
   }
 
   /**
@@ -495,8 +527,8 @@ export class AkeneoApi {
    * Uses the class instance's retry config and merges and additional
    * config passed in via the request options.
    */
-  getRetryConfig(methodRetryConfig?: AkeneoRetryConfig) {
-    return methodRetryConfig || this.retry
+  getRetryConfig(methodRetryConfig?: AkeneoRetryConfig): Required<AkeneoRetryConfig> {
+    return { ...DEFAULT_RETRY_CONFIG, ...(methodRetryConfig ?? this.retry) }
   }
 
   /**

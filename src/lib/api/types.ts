@@ -18,6 +18,8 @@ export interface AkeneoRetryConfig {
   /**
    * The number of milliseconds to wait before retrying a failed request.
    * This will be increased exponentially {@see AkeneoApi.calculateDelay}.
+   * Note that if the server responds with a `429` status code, the delay
+   * will depend on the value of the `Retry-After` header.
    */
   delayMs: number
 
@@ -26,6 +28,12 @@ export interface AkeneoRetryConfig {
    * returning the error caught from the last failure.
    */
   maxRetries: number
+
+  /**
+   * The maximum number of times a request will be retried when if a
+   * 429 status code is received. Default to `5`.
+   */
+  max429Retries?: number
 
   /**
    * If enabled, adds a random element to the exponential increase
