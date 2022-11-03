@@ -3,8 +3,12 @@ import qs from 'qs'
 import {
   AkeneoApiConfig,
   AkeneoRetryConfig,
+  DeleteAssetParams,
+  DeleteProductModelParams,
+  DeleteProductParams,
   GetAssetParams,
   GetFamilyParams,
+  GetListOfAssetsParams,
   GetListOfAttributeOptionsParams,
   GetListOfAttributesParams,
   GetListOfCategoriesParams,
@@ -231,6 +235,18 @@ export class AkeneoApi {
   }
 
   /**
+   * Delete a product
+   * https://api.akeneo.com/api-reference.html#delete_products__code_
+   */
+  deleteProduct(options: CommonRequestOptions & DeleteProductParams): Promise<void> {
+    return this.request({
+      ...this.extractCommonRequestOptions(options),
+      path: `/products/${options.code}`,
+      method: 'DELETE',
+    })
+  }
+
+  /**
    * Get a list of products
    * https://api.akeneo.com/api-reference.html#get_products
    */
@@ -255,6 +271,18 @@ export class AkeneoApi {
       ...this.extractCommonRequestOptions(options),
       path: `/product-models/${options.code}`,
       method: 'GET',
+    })
+  }
+
+  /**
+   * Delete a product model
+   * https://api.akeneo.com/api-reference.html#delete_product_models__code_
+   */
+  deleteProductModel(options: DeleteProductModelParams): Promise<void> {
+    return this.request({
+      ...this.extractCommonRequestOptions(options),
+      path: `/product-models/${options.code}`,
+      method: 'DELETE',
     })
   }
 
@@ -375,11 +403,27 @@ export class AkeneoApi {
    * https://api.akeneo.com/api-reference.html#get_reference_entity_records
    */
   async getListOfReferenceEntityRecords(
-    options: CommonRequestOptions & GetListOfReferenceEntityRecordsParams,
+    options: GetListOfReferenceEntityRecordsParams,
   ): Promise<Results<ReferenceEntityRecord>> {
     const response = await this.request({
       ...this.extractCommonRequestOptions(options),
       path: `/reference-entities/${options.referenceEntityCode}/records`,
+      method: 'GET',
+    })
+    if (options?.fetchAll) {
+      await this.appendRemainingPages({ response })
+    }
+    return response
+  }
+
+  /**
+   * Get a list of assets for a given asset family code
+   * https://api.akeneo.com/api-reference.html#get_assets__code_
+   */
+  async getListOfAssets(options: GetListOfAssetsParams): Promise<Asset> {
+    const response = await this.request({
+      ...this.extractCommonRequestOptions(options),
+      path: `/asset-families/${options.assetFamilyCode}/assets`,
       method: 'GET',
     })
     if (options?.fetchAll) {
@@ -397,6 +441,18 @@ export class AkeneoApi {
       ...this.extractCommonRequestOptions(options),
       path: `/asset-families/${options.assetFamilyCode}/assets/${options.code}`,
       method: 'GET',
+    })
+  }
+
+  /**
+   * Delete an asset based on it's code and asset family code
+   * https://api.akeneo.com/api-reference.html#delete_assets__code_
+   */
+  async deleteAsset(options: DeleteAssetParams): Promise<void> {
+    return await this.request({
+      ...this.extractCommonRequestOptions(options),
+      path: `/asset-families/${options.assetFamilyCode}/assets/${options.code}`,
+      method: 'DELETE',
     })
   }
 

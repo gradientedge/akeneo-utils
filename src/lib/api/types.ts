@@ -87,6 +87,13 @@ export interface GetProductModelParams extends CommonRequestOptions {
   }
 }
 
+export interface DeleteProductModelParams extends CommonRequestOptions {
+  /**
+   * The product code
+   */
+  code: string
+}
+
 export interface GetProductParams extends CommonRequestOptions {
   /**
    * The product code
@@ -109,6 +116,13 @@ export interface GetProductParams extends CommonRequestOptions {
      */
     with_completenesses?: boolean | undefined
   }
+}
+
+export interface DeleteProductParams extends CommonRequestOptions {
+  /**
+   * The product code
+   */
+  code: string
 }
 
 export interface GetListOfProductsParams extends CommonRequestOptions {
@@ -444,7 +458,62 @@ export interface GetListOfReferenceEntityRecordsParams extends CommonRequestOpti
   }
 }
 
+export interface GetListOfAssetsParams extends CommonRequestOptions {
+  /**
+   * Whether the `_links.next.href` should be followed until all pages are loaded
+   */
+  fetchAll?: boolean | undefined
+
+  /**
+   * The asset family code
+   */
+  assetFamilyCode: string
+
+  params?: {
+    /**
+     * Filter records, for more details see the Filters section:
+     * https://api.akeneo.com/documentation/filter.html#filter-assets
+     */
+    search?: string | undefined
+
+    /**
+     * Filter attribute values to return scopable attributes for the given channel as
+     * well as the non localizable/non scopable attributes, for more details see the
+     * Filter attribute values by channel section:
+     * https://api.akeneo.com/documentation/filter.html#asset-values-by-channel
+     */
+    channel?: string | undefined
+
+    /**
+     * Filter attribute values to return localizable attributes for the given locales
+     * as well as the non localizable/non scopable attributes, for more details see
+     * the Filter attribute values by locale section:
+     * https://api.akeneo.com/documentation/filter.html#asset-values-by-locale
+     */
+    locales?: string | undefined
+
+    /**
+     * Cursor to the first page by default -  when using the `search_after` pagination
+     * method type. Should never be set manually, see Pagination section:
+     * https://api.akeneo.com/documentation/pagination.html
+     */
+    search_after?: string | undefined
+  }
+}
+
 export interface GetAssetParams extends CommonRequestOptions {
+  /**
+   * The asset code
+   */
+  code: string
+
+  /**
+   * The asset family code
+   */
+  assetFamilyCode: string
+}
+
+export interface DeleteAssetParams extends CommonRequestOptions {
   /**
    * The asset code
    */
