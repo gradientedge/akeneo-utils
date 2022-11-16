@@ -501,6 +501,11 @@ export interface GetListOfAssetsParams extends CommonRequestOptions {
     locales?: string | undefined
 
     /**
+     * Pagination method type, see https://api.akeneo.com/documentation/pagination.html
+     */
+    pagination_type?: PaginationType | undefined
+
+    /**
      * Cursor to the first page by default -  when using the `search_after` pagination
      * method type. Should never be set manually, see Pagination section:
      * https://api.akeneo.com/documentation/pagination.html
