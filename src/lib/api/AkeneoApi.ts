@@ -423,7 +423,7 @@ export class AkeneoApi {
    * Get a list of assets for a given asset family code
    * https://api.akeneo.com/api-reference.html#get_assets__code_
    */
-  async getListOfAssets(options: GetListOfAssetsParams): Promise<Asset> {
+  async getListOfAssets(options: GetListOfAssetsParams): Promise<Results<Asset>> {
     const response = await this.request({
       ...this.extractCommonRequestOptions(options),
       path: `/asset-families/${options.assetFamilyCode}/assets`,
