@@ -1,11 +1,11 @@
 :root {
     --light-hl-0: #000000;
     --dark-hl-0: #D4D4D4;
-    --light-hl-1: #000000;
-    --dark-hl-1: #C8C8C8;
-    --light-hl-2: #A31515;
-    --dark-hl-2: #CE9178;
-    --light-code-background: #F5F5F5;
+    --light-hl-1: #A31515;
+    --dark-hl-1: #CE9178;
+    --light-hl-2: #000000;
+    --dark-hl-2: #C8C8C8;
+    --light-code-background: #FFFFFF;
     --dark-code-background: #1E1E1E;
 }
 
@@ -23,14 +23,14 @@
     --code-background: var(--dark-code-background);
 } }
 
-body.light {
+:root[data-theme='light'] {
     --hl-0: var(--light-hl-0);
     --hl-1: var(--light-hl-1);
     --hl-2: var(--light-hl-2);
     --code-background: var(--light-code-background);
 }
 
-body.dark {
+:root[data-theme='dark'] {
     --hl-0: var(--dark-hl-0);
     --hl-1: var(--dark-hl-1);
     --hl-2: var(--dark-hl-2);
