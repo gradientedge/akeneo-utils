@@ -140,8 +140,10 @@ describe('AkeneoApi', () => {
             code: 'ECONNABORTED',
             request: {
               headers: {
-                Accept: 'application/json',
-                Authorization: '********',
+                accept: 'application/json',
+                'accept-encoding': 'gzip, compress, deflate, br',
+                authorization: '********',
+                'user-agent': '',
               },
               method: 'get',
               url: 'https://test-endpoint/api/rest/v1/products',
@@ -477,10 +479,13 @@ describe('AkeneoApi', () => {
         } catch (error: any) {
           expect(error?.toJSON()).toEqual({
             data: {
+              code: 'ERR_BAD_RESPONSE',
               request: {
                 headers: {
-                  Accept: 'application/json',
-                  Authorization: '********',
+                  accept: 'application/json',
+                  'accept-encoding': 'gzip, compress, deflate, br',
+                  authorization: '********',
+                  'user-agent': '',
                 },
                 method: 'get',
                 url: 'https://test-endpoint/api/rest/v1/products',

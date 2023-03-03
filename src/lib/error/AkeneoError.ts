@@ -1,6 +1,7 @@
 import stringify from 'json-stringify-safe'
-import { AxiosError, AxiosRequestConfig } from 'axios'
+import { AxiosError, InternalAxiosRequestConfig } from 'axios'
 import { maskSensitiveHeaders, maskSensitiveInput } from '../utils'
+import { extractAxiosHeaders } from '../utils/extract-headers'
 
 /**
  * The error class thrown by any of the utility classes.
@@ -44,14 +45,14 @@ export class AkeneoError extends Error {
         request: {
           url: e.config?.url,
           method: e.config?.method,
-          headers: maskSensitiveHeaders(e.config?.headers),
+          headers: maskSensitiveHeaders(extractAxiosHeaders(e.config?.headers)),
           params: maskSensitiveInput(e.config?.params),
           data: maskSensitiveInput(this.parseRequestData(e.config)),
         },
         response: {
           status: e.response?.status,
           data: maskSensitiveInput(e.response?.data),
-          headers: e.response?.headers,
+          headers: extractAxiosHeaders(e.response?.headers),
         },
       },
       e.response?.status,
@@ -61,7 +62,10 @@ export class AkeneoError extends Error {
   /**
    * Parse the JSON string back in to an object for easier viewing
    */
-  public static parseRequestData(config: AxiosRequestConfig) {
+  public static parseRequestData(config: InternalAxiosRequestConfig | undefined) {
+    if (config === undefined) {
+      return
+    }
     let data = config?.data
     if (typeof data === 'string' && data) {
       let contentType = ''

@@ -97,8 +97,12 @@ describe('AkeneoAuthApi', () => {
             code: 'ECONNABORTED',
             request: {
               headers: {
-                Authorization: '********',
-                'Content-Type': 'application/json',
+                accept: 'application/json, text/plain, */*',
+                'accept-encoding': 'gzip, compress, deflate, br',
+                authorization: '********',
+                'content-length': '79',
+                'content-type': 'application/json',
+                'user-agent': 'axios/1.3.4',
               },
               method: 'post',
               url: 'https://test-endpoint/api/oauth/v1/token',
@@ -130,6 +134,7 @@ describe('AkeneoAuthApi', () => {
       } catch (error: any) {
         expect(error?.toJSON()).toEqual({
           data: {
+            code: 'ERR_BAD_RESPONSE',
             request: {
               data: {
                 grant_type: 'password',
@@ -137,17 +142,18 @@ describe('AkeneoAuthApi', () => {
                 username: 'test-username',
               },
               headers: {
-                Accept: 'application/json, text/plain, */*',
-                Authorization: '********',
-                'Content-Length': 79,
-                'Content-Type': 'application/json',
+                accept: 'application/json, text/plain, */*',
+                'accept-encoding': 'gzip, compress, deflate, br',
+                authorization: '********',
+                'content-length': '79',
+                'content-type': 'application/json',
+                'user-agent': 'axios/1.3.4',
               },
               method: 'post',
               url: 'https://test-endpoint/api/oauth/v1/token',
             },
             response: {
               data: '',
-              headers: {},
               status: 500,
             },
           },
