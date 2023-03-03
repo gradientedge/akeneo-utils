@@ -1,4 +1,5 @@
 import { AkeneoError } from '../../lib'
+import { InternalAxiosRequestConfig } from 'axios'
 
 describe('AkeneoError', () => {
   it('should return the expected string when stringified', async () => {
@@ -36,9 +37,9 @@ describe('AkeneoError', () => {
 
   describe('parseRequestData', () => {
     it("should return the data passed in if it isn't a non-zero length string", () => {
-      expect(AkeneoError.parseRequestData({})).toBeUndefined()
-      expect(AkeneoError.parseRequestData({ data: null })).toBeNull()
-      expect(AkeneoError.parseRequestData({ data: 123 })).toBe(123)
+      expect(AkeneoError.parseRequestData({} as InternalAxiosRequestConfig)).toBeUndefined()
+      expect(AkeneoError.parseRequestData({ data: null } as InternalAxiosRequestConfig)).toBeNull()
+      expect(AkeneoError.parseRequestData({ data: 123 } as InternalAxiosRequestConfig)).toBe(123)
     })
 
     it("should return the data passed in if it's a string but the Content-Type is missing", () => {
@@ -46,7 +47,7 @@ describe('AkeneoError', () => {
         AkeneoError.parseRequestData({
           data: '{"test":1}',
           headers: {},
-        }),
+        } as InternalAxiosRequestConfig),
       ).toBe('{"test":1}')
     })
 
@@ -57,7 +58,7 @@ describe('AkeneoError', () => {
           headers: {
             'Content-Type': '',
           },
-        }),
+        } as InternalAxiosRequestConfig),
       ).toBe('{"test":1}')
     })
 
@@ -68,7 +69,7 @@ describe('AkeneoError', () => {
           headers: {
             'Content-Type': 'text/plain',
           },
-        }),
+        } as InternalAxiosRequestConfig),
       ).toBe('{"test":1}')
     })
 
@@ -79,7 +80,7 @@ describe('AkeneoError', () => {
           headers: {
             'Content-Type': 'application/json',
           },
-        }),
+        } as InternalAxiosRequestConfig),
       ).toBe('{"test"///:1}')
     })
 
@@ -90,7 +91,7 @@ describe('AkeneoError', () => {
           headers: {
             'Content-Type': 'application/json',
           },
-        }),
+        } as InternalAxiosRequestConfig),
       ).toEqual({ test: 1 })
     })
 
@@ -101,7 +102,7 @@ describe('AkeneoError', () => {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
-        }),
+        } as InternalAxiosRequestConfig),
       ).toBeNull()
     })
 
@@ -112,7 +113,7 @@ describe('AkeneoError', () => {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
-        }),
+        } as InternalAxiosRequestConfig),
       ).toEqual({
         single: '1',
         double: ['2', '3'],
