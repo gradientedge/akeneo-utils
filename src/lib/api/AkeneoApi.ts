@@ -338,7 +338,7 @@ export class AkeneoApi {
    * https://api.akeneo.com/api-reference.html#get_product_models
    */
   async getListOfProductModels(options?: GetListOfProductModelsParams): Promise<Results<ProductModel>> {
-    const response = await this.request<any, Results<ProductModel>>({
+    const response = await this.request<Results<ProductModel>>({
       ...this.extractCommonRequestOptions(options),
       path: `/product-models`,
       method: 'GET',
@@ -508,8 +508,10 @@ export class AkeneoApi {
 
     const instance = axios.create({
       timeout: this.config.timeoutMs || DEFAULT_REQUEST_TIMEOUT_MS,
-      paramsSerializer: function (params: any) {
-        return qs.stringify(params, { arrayFormat: 'repeat' })
+      paramsSerializer: {
+        serialize: (params: any) => {
+          return qs.stringify(params, { arrayFormat: 'repeat' })
+        },
       },
       httpsAgent: agent,
     })
@@ -522,7 +524,7 @@ export class AkeneoApi {
   /**
    * Make the request to the akeneo REST API.
    */
-  async request<T = any, R = any>(options: FetchOptions<T>): Promise<R> {
+  async request<R = any>(options: FetchOptions): Promise<R> {
     const requestConfig = await this.getRequestOptions(options)
     const retryConfig = this.getRetryConfig(options.retry)
 
